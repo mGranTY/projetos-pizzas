@@ -74,9 +74,14 @@ document.querySelector('.pizzaInfo--addButton').addEventListener('click', (e) =>
     let precoNumber = parseFloat(preco.replace('R$',''))
     // console.log(precoNumber)
     // console.log(somaPrecos)
+    // calcula o preço das pizzas em conjunto
     somaPrecos += precoNumber
+    // calcula o desconto
     let desconto = somaPrecos * 0.1
     // console.log(somaPrecos)
+    //reseta a quantidade de pizzas
+    quantidadePizza.length = 0
+    quantidadePizza.push(1);
 
     document.querySelector('.cart--totalitem').innerHTML = `<span>Subtotal</span> <span>R$ ${somaPrecos.toFixed(2)}</span>`
     document.querySelector('.desconto').innerHTML = `<span>Desconto (-10%)</span> <span>R$ ${desconto.toFixed(2)}</span>`
