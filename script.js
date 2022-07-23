@@ -1,3 +1,8 @@
+
+let pizzaAtual = []
+let quantidadePizza = [1]
+
+
 const listarPizzas = () => {
     pizzaJson.map( (pizzas, index) => {
         //CLona o HTML base para preenchimento
@@ -9,11 +14,15 @@ const listarPizzas = () => {
         pizzaItem.querySelector('.pizza-item--name').innerHTML = pizzas.name;
         pizzaItem.querySelector('.pizza-item--desc').innerHTML = pizzas.description;
         pizzaItem.querySelector('.pizza-item--id').innerHTML = pizzas.id;
-
         //Bloqueia a pagina de atualizar ao clicar na pizza e abre o Modal da pizza com suavidade
         pizzaItem.querySelector('a').addEventListener('click', (e) => {
             e.preventDefault();
+            //Limpa variavel da pizza atual
+            pizzaAtual.length = 0
+            //Define a variavel da pizza atualmente aberta
+            pizzaAtual.push(pizzas.id)
 
+            document.querySelector('.pizzaInfo--qt').innerHTML = `${quantidadePizza}`
             //seta tamanho pequeno
             document.querySelector('.pizzaInfo--size[data-key="0"]').innerHTML = pizzas.sizes[0];
             //seta tamanho medio
@@ -81,6 +90,7 @@ document.querySelector('.pizzaInfo--size[data-key="2"]').addEventListener('click
     document.querySelector('.pizzaBig img').style.height = '400px'
 
 
+
 })
 
 
@@ -89,15 +99,39 @@ document.querySelector('.pizzaInfo--size[data-key="2"]').addEventListener('click
 //Aumentar quantidade de pizzas
 document.querySelector('.pizzaInfo--qtmais').addEventListener('click', (e) => {
     let quantidadePizza = document.querySelector('.pizzaInfo--qt').innerHTML
-    let quantidadePizzaNumber = parseInt(quantidadePizza)
-    document.querySelector('.pizzaInfo--qt').innerHTML = `${quantidadePizzaNumber + 1}`
+    let quantidadePizzaNumber = parseInt(quantidadePizza) + 1
+    document.querySelector('.pizzaInfo--qt').innerHTML = `${quantidadePizzaNumber}`
+
+    let pizzaAtualObj = pizzaJson.filter(id => id.id === pizzaAtual[0])
+    let pizzaAtualPreco = pizzaAtualObj[0].price
+    // console.log(pizzaAtualPreco * quantidadePizzaNumber)
+    setarPreco(pizzaAtualPreco, quantidadePizzaNumber)
+    // document.querySelector('.pizzaInfo--actualPrice').innerHTML = `R$ ${pizzaAtualPreco.toFixed(2) * quantidadePizzaNumber}`
+
 })
 //Diminui quantidade de pizzas e previne ficar abaixo de 1
 document.querySelector('.pizzaInfo--qtmenos').addEventListener('click', (e) => {
+
     let quantidadePizza = document.querySelector('.pizzaInfo--qt').innerHTML
     let quantidadePizzaNumber = parseInt(quantidadePizza) - 1
     if (quantidadePizzaNumber <= 1){
         quantidadePizzaNumber = 1
     }
     document.querySelector('.pizzaInfo--qt').innerHTML = `${quantidadePizzaNumber}`
+    // console.log(pizzaAtual)
+
+    let pizzaAtualObj = pizzaJson.filter(id => id.id === pizzaAtual[0])
+    let pizzaAtualPreco = pizzaAtualObj[0].price
+    // console.log(pizzaAtualPreco * quantidadePizzaNumber)
+    setarPreco(pizzaAtualPreco, quantidadePizzaNumber)
+    // document.querySelector('.pizzaInfo--actualPrice').innerHTML = `R$ ${pizzaAtualPreco.toFixed(2) * quantidadePizzaNumber}`
+
+
 })
+
+//Seta o preço da pizza baseado em quantas estão selecionadas
+const setarPreco = (preco, quantidade) => {
+    // console.log(preco)
+    // console.log(quantidade)
+    document.querySelector('.pizzaInfo--actualPrice').innerHTML = `R$ ${(preco * quantidade).toFixed(2)}`
+}
