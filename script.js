@@ -46,17 +46,37 @@ const listarPizzas = () => {
            }, 150)
 
 
+
         })
         document.querySelector('.pizza-area').append(pizzaItem);
     } )
 }
 listarPizzas();
 
-//Fecha o modal de pizzas
-document.querySelector('.pizzaInfo--cancelButton').addEventListener('click', (e) => {
-    document.querySelector('.pizzaWindowArea').style.display = 'none';
 
+document.querySelector('.pizzaInfo--addButton').addEventListener('click', (e) => {
+    document.querySelector('.pizzaWindowArea').style.opacity = '0';
+    let pizzaAtualObj = pizzaJson.filter(id => id.id === pizzaAtual[0])
+    let pObj = pizzaAtualObj[0]
+    console.log(pObj)
+    let cartItem = document.querySelector('.models .cart--item').cloneNode(true);
+    console.log(cartItem)
+
+    document.querySelector('aside').style.width = 'auto'
+    cartItem.querySelector('.cart--item-nome').innerHTML = pObj.name
+    cartItem.querySelector('.cart--item--qt').innerHTML = `${parseInt(quantidadePizza)}`
+    cartItem.querySelector('.cart--item img').src = pObj.img;
+    document.querySelector('.cart').append(cartItem);
+
+    let preco = document.querySelector('.pizzaInfo--actualPrice').innerHTML
+
+    document.querySelector('.cart--totalitem').innerHTML = `<span>Subtotal</span> <span>${preco}</span>`
+    document.querySelector('.desconto').innerHTML = `<span>Desconto (-10%)</span> <span>R$ ${(parseFloat(preco.replace("R$",'')) * 0.1).toFixed(2)}</span>`
+    document.querySelector('.total').innerHTML = `<span>Total</span> <span>R$ ${(parseFloat(preco.replace("R$",'')) - (parseFloat(preco.replace("R$",'')) * 0.1)).toFixed(2)}</span>`
 })
+
+
+// let pizzaItem = document.querySelector('.models .pizza-item').cloneNode(true);
 
 //Limpar selecionados
 
@@ -133,5 +153,10 @@ document.querySelector('.pizzaInfo--qtmenos').addEventListener('click', (e) => {
 const setarPreco = (preco, quantidade) => {
     // console.log(preco)
     // console.log(quantidade)
+
+    quantidadePizza.length = 0
+
+    quantidadePizza.push(quantidade)
+
     document.querySelector('.pizzaInfo--actualPrice').innerHTML = `R$ ${(preco * quantidade).toFixed(2)}`
 }
