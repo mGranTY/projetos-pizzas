@@ -1,11 +1,3 @@
-// const listarPizzas = () => {
-//     let divHtml = document.getElementsByClassName('pizza-item');
-//     console.log(JSON.parse(JSON.stringify(divHtml)))
-// }
-//
-// listarPizzas();
-
-
 const listarPizzas = () => {
     pizzaJson.map( (pizzas, index) => {
         let pizzaItem = document.querySelector('.models .pizza-item').cloneNode(true)
