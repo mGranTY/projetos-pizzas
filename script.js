@@ -146,6 +146,7 @@ const updateCart = () => {
 
     } else {
         document.querySelector('aside').classList.remove('show');
+        document.querySelector('aside').style.left = '100%'
     }
 
 
