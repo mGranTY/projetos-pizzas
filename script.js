@@ -4,7 +4,7 @@ let quantidadePizza = 1
 let somaPrecos = 0
 
 
-const listarPizzas = () => {
+const listPizzas = () => {
     pizzaJson.map( (pizzas, index) => {
         //CLona o HTML base para preenchimento
         let pizzaItem = document.querySelector('.models .pizza-item').cloneNode(true);
@@ -52,7 +52,7 @@ const listarPizzas = () => {
         document.querySelector('.pizza-area').append(pizzaItem);
     } )
 }
-listarPizzas();
+listPizzas();
 
 //adiciona item no carrinho
 document.querySelector('.pizzaInfo--addButton').addEventListener('click', (e) => {
@@ -75,7 +75,7 @@ document.querySelector('.pizzaInfo--addButton').addEventListener('click', (e) =>
             qt: quantidadePizza
         });
     }
-
+    updateCart();
 
 
     // let cartItem = document.querySelector('.models .cart--item').cloneNode(true);
@@ -88,26 +88,69 @@ document.querySelector('.pizzaInfo--addButton').addEventListener('click', (e) =>
     // document.querySelector('.cart').append(cartItem);
 
 
-    let preco = document.querySelector('.pizzaInfo--actualPrice').innerHTML
-    let precoNumber = parseFloat(preco.replace('R$',''))
-    // console.log(precoNumber)
-    // console.log(somaPrecos)
-    // calcula o preço das pizzas em conjunto
-    somaPrecos += precoNumber
-    // calcula o desconto
-    let desconto = somaPrecos * 0.1
-    // console.log(somaPrecos)
-    //reseta a quantidade de pizzas
-    quantidadePizza = 1
-
-    document.querySelector('.cart--totalitem').innerHTML = `<span>Subtotal</span> <span>R$ ${somaPrecos.toFixed(2)}</span>`
-    document.querySelector('.desconto').innerHTML = `<span>Desconto (-10%)</span> <span>R$ ${desconto.toFixed(2)}</span>`
-    document.querySelector('.total').innerHTML = `<span>Total</span> <span>R$ ${(somaPrecos - desconto).toFixed(2)}</span>`
-
 })
+const calcularPreco = () => {
+
+    if(cart.length > 0){
+        let precoNumber = 0
+        for(let i in cart){
+            let pizzaItem = pizzaJson.find((item) => item.id === cart[i].id)
+            precoNumber += cart[i].qt * pizzaItem.price
+        }
+
+        let desconto = precoNumber * 0.1
+        //reseta a quantidade de pizzas
+        quantidadePizza = 1;
+
+        document.querySelector('.cart--totalitem').innerHTML = `<span>Subtotal</span> <span>R$ ${precoNumber.toFixed(2)}</span>`
+        document.querySelector('.desconto').innerHTML = `<span>Desconto (-10%)</span> <span>R$ ${desconto.toFixed(2)}</span>`
+        document.querySelector('.total').innerHTML = `<span>Total</span> <span>R$ ${(precoNumber - desconto).toFixed(2)}</span>`
+    }
+
+}
+
+const updateCart = () =>{
+
+    if(cart.length > 0){
+        document.querySelector('aside').classList.add('show');
+        document.querySelector('.cart').innerHTML = ''
+        for(let i in cart){
+
+            let pizzaItem = pizzaJson.find((item) => item.id === cart[i].id)
+
+            let pizzaSize = cart[i].size === 0 ? 'P' : cart[i].size === 1 ? 'M' : cart[i].size === 2 ? 'G': undefined;
+            let cartItem = document.querySelector('.models .cart--item').cloneNode(true);
+            cartItem.querySelector('img').src = pizzaItem.img;
+            cartItem.querySelector('.cart--item-nome').innerHTML = `${pizzaItem.name} (${pizzaSize}) `;
+            cartItem.querySelector('.cart--item--qt').innerHTML = cart[i].qt;
+
+            cartItem.querySelector('.cart--item-qtmenos').addEventListener('click', (e) => {
+                if(cart[i].qt > 1){
+                    cart[i].qt--
+                    updateCart()
+                }else{
+                    cart.splice(cart[i],1)
+                    updateCart()
+                }
+
+            })
+
+            cartItem.querySelector('.cart--item-qtmais').addEventListener('click', (e) => {
+                cart[i].qt++
+                updateCart()
+            })
+
+            document.querySelector('.cart').append(cartItem)
+        }
+        calcularPreco()
+
+    }else{
+        document.querySelector('aside').classList.remove('show');
+    }
 
 
-// let pizzaItem = document.querySelector('.models .pizza-item').cloneNode(true);
+
+}
 
 
 //Fecha o modal de piza
@@ -119,7 +162,6 @@ document.querySelector('.pizzaInfo--cancelMobileButton').addEventListener('click
 })
 
 //Limpar selecionados
-
 
 
 const limparSelecionados = () => {
