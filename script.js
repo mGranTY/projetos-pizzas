@@ -5,13 +5,13 @@ let somaPrecos = 0
 
 
 const listPizzas = () => {
-    pizzaJson.map( (pizzas, index) => {
+    pizzaJson.map((pizzas, index) => {
         //CLona o HTML base para preenchimento
         let pizzaItem = document.querySelector('.models .pizza-item').cloneNode(true);
 
         //Define as caracteristicas da pizza
         pizzaItem.querySelector('.pizza-item--img img').src = pizzas.img;
-        pizzaItem.querySelector('.pizza-item--price').innerHTML = 'R$ '+pizzas.price.toFixed(2);
+        pizzaItem.querySelector('.pizza-item--price').innerHTML = 'R$ ' + pizzas.price.toFixed(2);
         pizzaItem.querySelector('.pizza-item--name').innerHTML = pizzas.name;
         pizzaItem.querySelector('.pizza-item--desc').innerHTML = pizzas.description;
         pizzaItem.querySelector('.pizza-item--id').innerHTML = pizzas.id;
@@ -33,7 +33,7 @@ const listPizzas = () => {
             //seta nome da pizza
             document.querySelector('.pizzaInfo h1').innerHTML = pizzas.name;
             //seta o preço
-            document.querySelector('.pizzaInfo--actualPrice').innerHTML = 'R$ '+pizzas.price.toFixed(2);
+            document.querySelector('.pizzaInfo--actualPrice').innerHTML = 'R$ ' + pizzas.price.toFixed(2);
             //seta descrição da pizza
             document.querySelector('.pizzaInfo--desc').innerHTML = pizzas.description;
             //seta imagem da piza
@@ -42,15 +42,14 @@ const listPizzas = () => {
             document.querySelector('.pizzaWindowArea').style.opacity = '0';
             document.querySelector('.pizzaWindowArea').style.display = 'flex'
             //suaviza a abertura do Modal
-           setTimeout(() => {
-               document.querySelector('.pizzaWindowArea').style.opacity = '1';
-           }, 150)
-
+            setTimeout(() => {
+                document.querySelector('.pizzaWindowArea').style.opacity = '1';
+            }, 150)
 
 
         })
         document.querySelector('.pizza-area').append(pizzaItem);
-    } )
+    })
 }
 listPizzas();
 
@@ -60,14 +59,14 @@ document.querySelector('.pizzaInfo--addButton').addEventListener('click', (e) =>
     let pizzaAtualObj = pizzaJson.filter(id => id.id === pizzaAtual[0])
     let size = document.querySelector('.pizzaInfo--size.selected').getAttribute('data-key');
     let pObj = pizzaAtualObj[0]
-    let idP = pObj.id+'@'+parseInt(size)
+    let idP = pObj.id + '@' + parseInt(size)
 
 
     let checkCart = cart.findIndex((item) => item.idp === idP)
 
     if (checkCart > -1) {
         cart[checkCart].qt += quantidadePizza++
-    } else{
+    } else {
         cart.push({
             idp: idP,
             id: pObj.id,
@@ -78,22 +77,12 @@ document.querySelector('.pizzaInfo--addButton').addEventListener('click', (e) =>
     updateCart();
 
 
-    // let cartItem = document.querySelector('.models .cart--item').cloneNode(true);
-    // // console.log(cartItem)
-    //
-    // document.querySelector('aside').style.width = 'auto'
-    // cartItem.querySelector('.cart--item-nome').innerHTML = pObj.name
-    // cartItem.querySelector('.cart--item--qt').innerHTML = `${parseInt(quantidadePizza)}`
-    // cartItem.querySelector('.cart--item img').src = pObj.img;
-    // document.querySelector('.cart').append(cartItem);
-
-
 })
 const calcularPreco = () => {
 
-    if(cart.length > 0){
+    if (cart.length > 0) {
         let precoNumber = 0
-        for(let i in cart){
+        for (let i in cart) {
             let pizzaItem = pizzaJson.find((item) => item.id === cart[i].id)
             precoNumber += cart[i].qt * pizzaItem.price
         }
@@ -109,27 +98,38 @@ const calcularPreco = () => {
 
 }
 
-const updateCart = () =>{
+document.querySelector('.menu-openner span').addEventListener('click', (e) =>{
+    if (cart.length >0){
+        document.querySelector('aside').style.left = '0%';
+    }
+})
+document.querySelector('.menu-closer').addEventListener('click', (e) =>{
+    document.querySelector('aside').style.left = '100%';
+})
 
-    if(cart.length > 0){
+const updateCart = () => {
+
+    document.querySelector('.menu-openner span').innerHTML = cart.length;
+
+    if (cart.length > 0) {
         document.querySelector('aside').classList.add('show');
         document.querySelector('.cart').innerHTML = ''
-        for(let i in cart){
+        for (let i in cart) {
 
             let pizzaItem = pizzaJson.find((item) => item.id === cart[i].id)
 
-            let pizzaSize = cart[i].size === 0 ? 'P' : cart[i].size === 1 ? 'M' : cart[i].size === 2 ? 'G': undefined;
+            let pizzaSize = cart[i].size === 0 ? 'P' : cart[i].size === 1 ? 'M' : cart[i].size === 2 ? 'G' : undefined;
             let cartItem = document.querySelector('.models .cart--item').cloneNode(true);
             cartItem.querySelector('img').src = pizzaItem.img;
             cartItem.querySelector('.cart--item-nome').innerHTML = `${pizzaItem.name} (${pizzaSize}) `;
             cartItem.querySelector('.cart--item--qt').innerHTML = cart[i].qt;
 
             cartItem.querySelector('.cart--item-qtmenos').addEventListener('click', (e) => {
-                if(cart[i].qt > 1){
+                if (cart[i].qt > 1) {
                     cart[i].qt--
                     updateCart()
-                }else{
-                    cart.splice(cart[i],1)
+                } else {
+                    cart.splice(cart[i], 1)
                     updateCart()
                 }
 
@@ -144,10 +144,9 @@ const updateCart = () =>{
         }
         calcularPreco()
 
-    }else{
+    } else {
         document.querySelector('aside').classList.remove('show');
     }
-
 
 
 }
@@ -194,7 +193,6 @@ document.querySelector('.pizzaInfo--size[data-key="2"]').addEventListener('click
     document.querySelector('.pizzaBig img').style.height = '300px'
 
 
-
 })
 
 
@@ -218,7 +216,7 @@ document.querySelector('.pizzaInfo--qtmenos').addEventListener('click', (e) => {
 
     let quantidadePizza = document.querySelector('.pizzaInfo--qt').innerHTML
     let quantidadePizzaNumber = parseInt(quantidadePizza) - 1
-    if (quantidadePizzaNumber <= 1){
+    if (quantidadePizzaNumber <= 1) {
         quantidadePizzaNumber = 1
     }
     document.querySelector('.pizzaInfo--qt').innerHTML = `${quantidadePizzaNumber}`
